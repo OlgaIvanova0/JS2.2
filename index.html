@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Задания 1 и 2</h3>
+    <h5>1. Улучшить меню таким образом, чтобы оно могло иметь многоуровневую структуру. <br>
+    2. Создать меню, соответствующее меню интернет-магазина (личный кабинет, каталог, промоакции и т.д.).
+    </h5>
+    <div id="menu-block"></div>
+    <h3>Задание 3</h3>
+    <h5>3. Создать функционал фотогалереи. 
+        Имеется статичный json-набор миниатюр, 
+        на основании которого строится сетка изображений
+        со ссылками на полноразмерные картинки.
+    </h5>
+    <div id="gallery"></div>
+    <h3>Задание 5</h3>
+    <h5>*Создать два статических ответа {result : “success”} и {result: “error”}. 
+        В зависимости от каждого из них навесить на определенный ajax-запрос 
+        обработчик результата.
+    </h5>
+    <button class="btn" id="success">SUCCESS</button>
+    <button class="btn" id="error">ERROR</button>
+<script src="MenuItems.js"></script>
+<script src="Menu.js"></script>
+<script src="gallery.js"></script>
+
+<script>
+    window.onload = () => {
+        //задания 1 и 2
+        let menuBlock = document.getElementById('menu-block');
+
+        let menu = new Menu('menu', 'menu', [
+            new SubMenu('#', 'Личный кабинет', 'subMenu', 'subMenu', [
+                new MenuItem('#', 'Мои данные'),
+                new MenuItem('#', 'Мои фото'),
+                new MenuItem('#', 'Избранное'),
+            ]),
+            new SubMenu('#', 'Моя корзина', 'subMenu', 'subMenu', [
+                new MenuItem('#', 'Корзина'),
+                new MenuItem('#', 'Отложенные товары'),
+                new MenuItem('#', 'История заказов'),
+            ]),
+            
+            new SubMenu('#', 'Мои акции', 'subMenu', 'subMenu', [
+                new MenuItem('#', 'Скидка дня'),
+                new MenuItem('#', 'Уцененные товары'),
+                new MenuItem('#', 'Личные скидки'),
+            ]),
+        ]);
+        menuBlock.innerHTML = menu.render();
+
+        //задание 3, создаю json:
+        let galleryJson1 = `{
+            "src": "images/min/1.jpg", 
+            "class": "imgGallery", 
+            "bigImgSrc": "images/max/1.jpg", 
+            "alt": "Картинка1"
+        }`;
+        let img1 = JSON.parse(galleryJson1);
+        let galleryJson2 = `{
+            "src": "images/min/2.jpg", 
+            "class": "imgGallery", 
+            "bigImgSrc": "images/max/2.jpg", 
+            "alt": "Картинка2"
+        }`;
+        let img2 = JSON.parse(galleryJson2);
+        let galleryJson3 = `{
+            "src": "images/min/3.jpg", 
+            "class": "imgGallery", 
+            "bigImgSrc": "images/max/3.jpg", 
+            "alt": "Картинка3"
+        }`;
+        let img3 = JSON.parse(galleryJson3);
+        let galleryBlock = document.getElementById('gallery');
+        let gallery = new Gallery('galleryImg', [
+            new GalleryItem(img1.src, img1.class, img1.bigImgSrc, img1.alt),
+            new GalleryItem(img2.src, img2.class, img2.bigImgSrc, img2.alt),
+            new GalleryItem(img3.src, img3.class, img3.bigImgSrc, img3.alt),
+        ])
+        galleryBlock.innerHTML = gallery.render();
+        gallery.clickMiniImg();
+
+        //Задание 4
+        //получаю ответ от локального сервера при нажатии на кнопки
+       document.getElementById('success').addEventListener('click', () => {
+            fetch('http://localhost:3000/customMockData/1')
+                .then(result => console.log(result.json()))
+        });
+        document.getElementById('error').addEventListener('click', () => {
+            fetch('http://localhost:3000/customMockData/2')
+                .then(result => console.log(result.json()))
+        });
+        
+    }
+    </script>
+</body>
+</html>
